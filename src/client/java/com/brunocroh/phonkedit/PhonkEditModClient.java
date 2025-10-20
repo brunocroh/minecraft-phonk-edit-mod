@@ -11,7 +11,6 @@ import net.minecraft.client.option.KeyBinding.Category;
 import net.minecraft.client.sound.PositionedSoundInstance;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResult.Pass;
 
 
 import org.lwjgl.glfw.GLFW;
@@ -61,8 +60,6 @@ public class PhonkEditModClient implements ClientModInitializer {
             }
         });
 
-        // Register attack block event
-
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
             return this.freeze();
         });
@@ -87,10 +84,8 @@ public class PhonkEditModClient implements ClientModInitializer {
 
         long currentTime = System.currentTimeMillis();
         if (currentTime - lastPlacedTime < COOLDOWN_MS) {
-            // Still in cooldown, skip
-            return ActionResult.PASS;
+            return ActionResult.CONSUME;
         }
-        // Trigger freeze effect
         MinecraftClient client = MinecraftClient.getInstance();
         if (!frozen) {
             frozen = true;
@@ -101,7 +96,6 @@ public class PhonkEditModClient implements ClientModInitializer {
             });
         }
 
-        // Play sound and store it so we can stop it later
         currentSound = PositionedSoundInstance.master(CustomSounds.PASSO_BEM_SOLTO, 1.0f, 3.0f);
         client.getSoundManager().play(currentSound);
 
